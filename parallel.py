@@ -1,15 +1,24 @@
 import mpi4py.MPI as mpi
 import pyomo.environ as pe
-from mpi.extensions.extension import MultiExtension
-#from mpi.extensions.cross_scen_extension import CrossScenarioExtension
+
 from mpisppy.phbase import PHBase
 from mpisppy.opt.ph import PH
+from mpisppy.extensions.extension import MultiExtension
+from mpisppy.extensions.cross_scen_extension import CrossScenarioExtension
+from mpisppy.cylinders.lagrangian_bounder import LagrangianOuterBound
+from mpisppy.cylinders.hub import PHHub
+from mpisppy.cylinders.cross_scen_hub import CrossScenarioHub
+from mpisppy.cylinders.cross_scen_spoke import CrossScenarioCutSpoke
+from mpisppy.opt.lshaped import LShapedMethod
+from mpisppy.utils.sputils import spin_the_wheel
 
 import farmer
+from data import *
 
 
-comm = mpi.COMM_WORLD
-rank = comm.Get_rank()
+# MPI setup
+glob_comm = mpi.COMM_WORLD
+glob_rank = glob_comm.Get_rank()
 
 
 solve_progressive_hedging = True
@@ -18,7 +27,7 @@ solve_progressive_hedging = True
 if solve_progressive_hedging:
 
     hub_ph_options = {
-        'solvername': 'gurobi',
+        'solvername': 'ipopt',
         'PHIterLimit': 50,
         'defaultPHrho': 1.0,
         'convthresh': 0.0,
@@ -26,10 +35,10 @@ if solve_progressive_hedging:
         'display_progress': False,
         'display_timing': False,
         'iter0_solver_options': {},
-        'iterk_solver_options': {}
+        'iterk_solver_options': {},
         # more
         'bundes_per_rank': 0,
-        'asynchronousPH': False
+        'asynchronousPH': False,
         'subsolvedirectories': None,
         'tee-rank0-solves': False,
         'cross_scen_options': {'check_bound_improve_iterations': 2}
@@ -43,17 +52,18 @@ if solve_progressive_hedging:
             'options': hub_ph_options,
             'all_scenario_names': SCENARIOS,
             'scenario_creator': farmer.scenario_creator,
-            'rho_setter': rho_setter,
+            'rho_setter': None,
             'extensions': MultiExtension,
-            'extension_kwargs': multi_ext
+            'extension_kwargs': { 'ext_classes' : [CrossScenarioExtension] }
         }
+    }
 
 
-    ph = PH(options, SCENARIOS, farmer.scenario_creator)
+    ph = PH(hub_ph_options, SCENARIOS, farmer.scenario_creator)
     results = ph.ph_main()
     variables = ph.gather_var_values_to_rank0()
     for (scenario, variable) in variables:
         print(scenario, variable, variables[scenario, variable])
 
 
-    scomm, opt = spin_the_wheel({}, [])
+    scomm, opt = spin_the_wheel(hub_dict, [])

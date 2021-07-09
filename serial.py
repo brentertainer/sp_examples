@@ -12,7 +12,7 @@ solve_extensive_form = True
 solve_progressive_hedging = True
 solve_benders_decomposition = True
 
-solver = root_solver = sp_solver = 'glpk'
+solver = root_solver = sp_solver = 'gurobi'
 
 # Solve Subproblems Individually
 if solve_subproblems_individually:
