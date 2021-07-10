@@ -1,5 +1,12 @@
 CROPS = ['Wheat', 'Corn', 'Sugar Beets']
 
+CROPS_BY_QUANTITY_RANGES = [
+    ('Wheat',          0, None),
+    ('Corn',           0, None),
+    ('Sugar Beets',    0, 6000),
+    ('Sugar Beets', 6000, None)
+]
+
 SCENARIOS = ['Above', 'Average', 'Below']
 
 ACREAGE = 500
@@ -36,17 +43,15 @@ MIN_REQUIRED = {
 }
 
 HARVEST = {
-    # i.e., "YIELD" but yield is a reserved word in python
-    # tons/acre
-    'Above':   {'Wheat':        3.0,
-                'Corn':         3.6,
-                'Sugar Beets': 24.0},
-    'Average': {'Wheat':        2.5,
-                'Corn':         3.0,
-                'Sugar Beets': 20.0},
-    'Below':   {'Wheat':        2.0,
-                'Corn':         2.4,
-                'Sugar Beets': 16.0},
+    ('Wheat', 'Above'):          3.0,
+    ('Corn', 'Above'):           3.6,
+    ('Sugar Beets', 'Above'):   24.0,
+    ('Wheat', 'Average'):        2.5,
+    ('Corn', 'Average'):         3.0,
+    ('Sugar Beets', 'Average'): 20.0,
+    ('Wheat', 'Below'):          2.0,
+    ('Corn', 'Below'):           2.4,
+    ('Sugar Beets', 'Below'):   16.0
 }
 
 PROBABILITY = {
