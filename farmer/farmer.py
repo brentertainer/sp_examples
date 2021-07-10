@@ -76,20 +76,23 @@ def scenario_creator(scenario, how=None, **kwargs):
         how = 'expectation'
 
     if how == 'expectation':
-        model.obj_stage1 = pe.Expression(expr=sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
-        model.obj_stage2 = pe.Expression(expr=(f(model)))
+        expr = sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
+        model.obj_stage2 = pe.Expression(expr=f(model))
         sputils.attach_root_node(model, model.obj_stage1, [model.acres_allocated])
     elif how == 'cvar':
         model.cvar_eta = pe.Var(domain=pe.Reals)
         model.cvar_nu = pe.Var(domain=pe.NonNegativeReals)
         model.con_cvar_nu = pe.Constraint(rule=con_cvar_nu)
-        model.obj_stage1 = pe.Expression(expr=model.cvar_eta + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
+        expr = model.cvar_eta + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
         model.obj_stage2 = pe.Expression(expr=model.cvar_nu / kwargs['epsilon'])
         sputils.attach_root_node(model, model.obj_stage1, [model.cvar_eta, model.acres_allocated])
     elif how == 'robust':
         model.robust_f = pe.Var(domain=pe.Reals)
         model.con_robust_f = pe.Constraint(rule=con_robust_f)
-        model.obj_stage1 = pe.Expression(expr=model.robust_f + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
+        expr = model.robust_f + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
         model.obj_stage2 = pe.Expression(expr=0)
         sputils.attach_root_node(model, model.obj_stage1, [model.robust_f, model.acres_allocated])
 

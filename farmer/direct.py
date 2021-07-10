@@ -85,19 +85,24 @@ def model_creator(how=None, **kwargs):
         how = 'expectation'
 
     if how == 'expectation':
-        model.obj_stage1 = pe.Expression(expr=sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
-        model.obj_stage2 = pe.Expression(expr=sum(model.probability[s] * f(model, s) for s in model.scenarios))
+        expr = sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
+        expr = sum(model.probability[s] * f(model, s) for s in model.scenarios)
+        model.obj_stage2 = pe.Expression(expr=expr)
     elif how == 'cvar':
         model.cvar_eta = pe.Var(domain=pe.Reals)
         model.cvar_nu = pe.Var(model.scenarios, domain=pe.NonNegativeReals)
         model.cvar_f = pe.Var(model.scenarios, domain=pe.Reals)
         model.con_cvar_nu = pe.Constraint(model.scenarios, rule=con_cvar_nu)
-        model.obj_stage1 = pe.Expression(expr=model.cvar_eta + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
-        model.obj_stage2 = pe.Expression(expr=sum(model.probability[s] * model.cvar_nu[s] for s in  model.scenarios) / kwargs['epsilon'])
+        expr = model.cvar_eta + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
+        expr = sum(model.probability[s] * model.cvar_nu[s] for s in  model.scenarios) / kwargs['epsilon']
+        model.obj_stage2 = pe.Expression(expr=expr)
     elif how == 'robust':
         model.robust_f = pe.Var(domain=pe.Reals)
         model.con_robust_f = pe.Constraint(model.scenarios, rule=con_robust_f)
-        model.obj_stage1 = pe.Expression(expr=model.robust_f + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops))
+        expr = model.robust_f + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
+        model.obj_stage1 = pe.Expression(expr=expr)
         model.obj_stage2 = pe.Expression(expr=0)
 
     model.obj = pe.Objective(sense=pe.minimize, expr=model.obj_stage1 + model.obj_stage2)
@@ -117,3 +122,4 @@ results = solver.solve(model)
 print(model.obj())
 for c in model.crops:
     print(c, pe.value(model.acres_allocated[c]))
+
