@@ -7,7 +7,6 @@ import inventory
 
 
 # instance parameters
-"""
 num_days = 2
 levels = [0, 1] # 0 = low demand, 1 = high demand
 cost = 5
@@ -15,7 +14,6 @@ revenue = {1: 7, 2: 5}
 probability = {0: 0.25, 1: 0.75}
 demand = {0: 5, 1: 10}
 """
-
 # instance parameters
 num_days = 5
 levels = [0, 1, 2]
@@ -23,6 +21,7 @@ cost = 5
 revenue = {1: 8, 2: 7, 3: 6, 4: 5, 5: 4}
 probability = {0: 0.25, 1: 0.50, 2: 0.25}
 demand = {0:  8, 1: 10, 2: 12}
+"""
 
 
 # ExtensiveForm arguments
