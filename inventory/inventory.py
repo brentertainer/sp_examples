@@ -1,10 +1,5 @@
-from functools import reduce
-from operator import mul
-
 import pyomo.environ as penv
 from mpisppy.scenario_tree import ScenarioNode
-
-import mpisppy.utils.sputils as sputils
 
 
 def instance_creator(name, num_days, cost, revenue, demand):
@@ -56,43 +51,15 @@ def instance_creator(name, num_days, cost, revenue, demand):
     return inst
 
 
-def node_creator(instance, path, probability):
-    nodes = []
-    nodes.append(ScenarioNode('ROOT',
-                              1.0,
-                              1,
-                              instance.profit_by_day[0],
-                              None,
-                              [instance.inventory[0],
-                               instance.sales[0]],
-                              instance))
-    for day, node in enumerate(path[:-1], start=1):
-        this_name = '_'.join(['ROOT', *[str(level) for level in path[:day]]])
-        if day == 1:
-            parent_name = 'ROOT'
-        else:
-            parent_name = '_'.join(['ROOT', *[str(level) for level in path[:day-1]]])
-        nodes.append(ScenarioNode(this_name,
-                                  probability[path[day-1]],
-                                  day+1,
-                                  instance.profit_by_day[day],
-                                  None,
-                                  [instance.inventory[day],
-                                   instance.sales[day]],
-                                  instance,
-                                  parent_name=parent_name))
-    for node in nodes:
-        print(id(node))
-    return nodes
-
-
-def scenario_creator(name,
-                     paths=None,
+def scenario_creator(scen,
+                     nodes=None,
+                     parent=None,
+                     node_prob=None,
+                     scen_prob=None,
                      num_days=None,
                      cost=None,
                      revenue=None,
-                     demand=None,
-                     probability=None):
+                     demand=None):
     """
     In mpi-sppy, the basic idea is to one determinsitic model per leaf node in the scenario tree.
     The mpi-sppy model object (ExtensiveForm, PH, LShapedMethod, etc.) then sews the determinstic
@@ -112,16 +79,25 @@ def scenario_creator(name,
     mpi-sppy each scenario generates its own root node object (i.e., a distinct root node with a
     unique memory address but with properties identical to all other root node objects).
     """
-
-    path = tuple(map(int, paths[name].split('_')[1:]))
     # Create an instance of the scenario using the `instance_creator` function.
-    instance = instance_creator(name,
+    instance = instance_creator(scen,
                                 num_days=num_days,
                                 cost=cost,
-                                revenue=revenue,
-                                demand={day: demand[node] for day, node in enumerate(path, start=1)})
+                                revenue=revenue[scen],
+                                demand=demand[scen])
     # Attach the list of non-tree nodes from the scenario tree that characterize the scenario.
-    instance._mpisppy_node_list = node_creator(instance, path, probability)
+    instance._mpisppy_node_list = [
+        ScenarioNode(node,
+                     node_prob[node],
+                     day+1,
+                     instance.profit_by_day[day],
+                     None,
+                     [instance.inventory[day],
+                      instance.sales[day]],
+                     instance,
+                     parent_name=parent[node])
+        for day, node in enumerate(nodes[scen])
+    ]
     # Attach the joint probability of the scenario.
-    instance._mpisppy_probability = reduce(mul, [probability[level] for level in path])
+    instance._mpisppy_probability = scen_prob[scen]
     return instance
