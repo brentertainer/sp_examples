@@ -2,7 +2,7 @@
 _num_days = 3
 _levels = [0, 1, 2]
 _cost = 5
-_revenue = {1: 8, 2: 6, 3: 4}
+_revenue = {1: 8, 2: 7, 3: 6}
 _demand = {0: 8, 1: 10, 2: 12}
 
 # scenario tree data
@@ -34,7 +34,17 @@ parent = {
     'ROOT_0_1': 'ROOT_0',
     'ROOT_0_2': 'ROOT_0',
     'ROOT_1_0': 'ROOT_1',
-    'ROOT_1_1': 'ROOT_1'
+    'ROOT_1_1': 'ROOT_1',
+    'ROOT_0_0_0': 'ROOT_0_0',
+    'ROOT_0_0_1': 'ROOT_0_0',
+    'ROOT_0_1_0': 'ROOT_0_1',
+    'ROOT_0_1_1': 'ROOT_0_1',
+    'ROOT_0_1_2': 'ROOT_0_1',
+    'ROOT_0_2_0': 'ROOT_0_2',
+    'ROOT_0_2_1': 'ROOT_0_2',
+    'ROOT_1_0_0': 'ROOT_1_0',
+    'ROOT_1_0_1': 'ROOT_1_0',
+    'ROOT_1_1_0': 'ROOT_1_1'
 }
 node_prob = {
     'ROOT':       1.00,
