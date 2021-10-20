@@ -33,6 +33,9 @@ def instance_creator(name, num_days, cost, revenue, demand):
         else:
             return penv.Constraint.Skip
 
+    def con_no_initial_sales(inst):
+        return inst.sales[0] == 0
+
 
     inst = penv.ConcreteModel(name=name)
     inst.days = penv.Set(initialize=range(0, num_days + 1))
@@ -48,6 +51,7 @@ def instance_creator(name, num_days, cost, revenue, demand):
     inst.profit_by_day = penv.Expression(inst.days, rule=profit_by_day)
     inst.profit_overall = penv.Objective(sense=penv.maximize, rule=profit_overall)
     inst.con_product_conservation = penv.Constraint(inst.days, rule=con_product_conservation)
+    inst.con_no_initial_sales = penv.Constraint(rule=con_no_initial_sales)
     return inst
 
 

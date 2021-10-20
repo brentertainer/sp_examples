@@ -40,3 +40,7 @@ for n in range(1, _num_days + 1):
             nodes[scen] = ['_'.join(path[:n]) for n in range(1, _num_days + 1)]
             revenue[scen] = _revenue
             demand[scen] = {day: _demand[int(level)] for day, level in enumerate(path[1:], start=1)}
+
+del _num_days, _levels, _cost, _revenue, _probability, _demand
+del scen, i, n, mul, product, reduce, path, prod
+

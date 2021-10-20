@@ -3,10 +3,10 @@ from itertools import product
 from operator import mul
 
 # instance parameters
-_num_days = 5
+_num_days = 3
 _levels = [0, 1, 2]
 _cost = 5
-_revenue = {1: 8, 2: 7, 3: 6, 4: 5, 5: 4}
+_revenue = {1: 8, 2: 6, 3: 4}
 _probability = {0: 1/4, 1: 1/2, 2: 1/4}
 _demand = {0:  8, 1: 10, 2: 12}
 
@@ -40,3 +40,7 @@ for n in range(1, _num_days + 1):
             nodes[scen] = ['_'.join(path[:n]) for n in range(1, _num_days + 1)]
             revenue[scen] = _revenue
             demand[scen] = {day: _demand[int(level)] for day, level in enumerate(path[1:], start=1)}
+
+del _num_days, _levels, _cost, _revenue, _probability, _demand
+del scen, i, n, mul, product, reduce, path, prod
+

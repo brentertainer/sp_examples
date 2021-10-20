@@ -1,9 +1,5 @@
 # instance parameters
-_num_days = 3
-_levels = [0, 1, 2]
-_cost = 5
 _revenue = {1: 8, 2: 7, 3: 6}
-_demand = {0: 8, 1: 10, 2: 12}
 
 # scenario tree data
 all_nodenames = [
@@ -104,8 +100,8 @@ nodes = {
 }
 
 # scenario instance data
-num_days = _num_days
-cost = _cost
+num_days = 3
+cost = 5
 demand = {
      'Scen1': {1:  8, 2:  8, 3:  8},
      'Scen2': {1:  8, 2:  8, 3: 12},
@@ -119,3 +115,5 @@ demand = {
     'Scen10': {1: 12, 2: 12, 3: 10}
 }
 revenue = {scen: _revenue for scen in demand}
+
+del _revenue

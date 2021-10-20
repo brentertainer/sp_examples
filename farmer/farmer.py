@@ -47,7 +47,7 @@ def con_robust_f(m):
     return m.robust_f >= f(m)
 
 
-def scenario_creator(scenario, how=None, **kwargs):
+def scenario_creator(scenario, risk_measure=None, **kwargs):
     model = pe.ConcreteModel()
     # sets
     model.crops = pe.Set(initialize=CROPS)
@@ -72,15 +72,15 @@ def scenario_creator(scenario, how=None, **kwargs):
     model._mpisppy_probability = PROBABILITY[scenario]
 
     # objective
-    if how is None:
-        how = 'expectation'
+    if risk_measure is None:
+        risk_measure = 'expectation'
 
-    if how == 'expectation':
+    if risk_measure == 'expectation':
         expr = sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
         model.obj_stage1 = pe.Expression(expr=expr)
         model.obj_stage2 = pe.Expression(expr=f(model))
         sputils.attach_root_node(model, model.obj_stage1, [model.acres_allocated])
-    elif how == 'cvar':
+    elif risk_measure == 'cvar':
         model.cvar_eta = pe.Var(domain=pe.Reals)
         model.cvar_nu = pe.Var(domain=pe.NonNegativeReals)
         model.con_cvar_nu = pe.Constraint(rule=con_cvar_nu)
@@ -88,7 +88,7 @@ def scenario_creator(scenario, how=None, **kwargs):
         model.obj_stage1 = pe.Expression(expr=expr)
         model.obj_stage2 = pe.Expression(expr=model.cvar_nu / kwargs['epsilon'])
         sputils.attach_root_node(model, model.obj_stage1, [model.cvar_eta, model.acres_allocated])
-    elif how == 'robust':
+    elif risk_measure == 'robust':
         model.robust_f = pe.Var(domain=pe.Reals)
         model.con_robust_f = pe.Constraint(rule=con_robust_f)
         expr = model.robust_f + sum(model.planting_cost[c] * model.acres_allocated[c] for c in model.crops)
@@ -99,3 +99,4 @@ def scenario_creator(scenario, how=None, **kwargs):
     model.obj = pe.Objective(sense=pe.minimize, expr=model.obj_stage1 + model.obj_stage2)
 
     return model
+
