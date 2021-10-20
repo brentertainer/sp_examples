@@ -6,9 +6,10 @@ import pyomo.environ as penv
 from mpisppy.opt.ef import ExtensiveForm
 
 import inventory
-import balanced_3stage as data
-#import balanced_6stage as data
-#import unbalanced_4stage as data
+#import data.balanced_3stage as data
+import data.balanced_4stage as data
+#import data.balanced_6stage as data
+#import data.unbalanced_4stage as data
 
 
 options = {'solver': 'gurobi', 'mipgap': 0.0}
@@ -37,22 +38,3 @@ ef = ExtensiveForm(options,
 result = ef.solve_extensive_form()
 print('Objective:', penv.value(ef.ef.EF_Obj))
 print('Purchase:', penv.value(ef.ef.Scen1.inventory[0]))
-
-
-nodes = set()
-edges = set()
-for scen, path in data.nodes.items():
-    for a, b in zip(path, path[1:] + [scen]):
-        nodes.add(a)
-        nodes.add(b)
-        edges.add((a, b))
-
-import networkx as nx
-import matplotlib.pyplot as plt
-graph = nx.DiGraph()
-graph.add_nodes_from(sorted(nodes))
-graph.add_edges_from(sorted(edges))
-
-pos = nx.drawing.nx_pydot.graphviz_layout(graph, "twopi")
-nx.draw(graph, pos, with_labels=True)
-plt.show()

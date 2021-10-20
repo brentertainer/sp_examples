@@ -6,10 +6,10 @@ from farmer import scenario_creator
 options = {'solver': 'glpk'}
 
 # pick one scenario_creator_kwargs below
-scenario_creator_kwargs = {'how': 'expectation'}
-# scenario_creator_kwargs = {'how': 'cvar', 'epsilon': 3 / 3}
-# scenario_creator_kwargs = {'how': 'robust'}
-# scenario_creator_kwargs = {'how': 'cvar', 'epsilon': 1 / 3}
+#scenario_creator_kwargs = {'risk_measure': 'expectation'}
+#scenario_creator_kwargs = {'risk_measure': 'cvar', 'epsilon': 3 / 3}
+#scenario_creator_kwargs = {'risk_measure': 'robust'}
+scenario_creator_kwargs = {'risk_measure': 'cvar', 'epsilon': 1 / 3}
 
 ef = ExtensiveForm(options, SCENARIOS, scenario_creator, scenario_creator_kwargs=scenario_creator_kwargs)
 results = ef.solve_extensive_form()

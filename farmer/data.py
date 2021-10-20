@@ -7,7 +7,7 @@ CROPS_BY_QUANTITY_RANGES = [
     ('Sugar Beets', 6000, None)
 ]
 
-SCENARIOS = ['Above', 'Average', 'Below']
+SCENARIOS = ['Scen1', 'Scen2', 'Scen3']
 
 ACREAGE = 500
 
@@ -43,19 +43,19 @@ MIN_REQUIRED = {
 }
 
 HARVEST = {
-    ('Wheat', 'Above'):          3.0,
-    ('Corn', 'Above'):           3.6,
-    ('Sugar Beets', 'Above'):   24.0,
-    ('Wheat', 'Average'):        2.5,
-    ('Corn', 'Average'):         3.0,
-    ('Sugar Beets', 'Average'): 20.0,
-    ('Wheat', 'Below'):          2.0,
-    ('Corn', 'Below'):           2.4,
-    ('Sugar Beets', 'Below'):   16.0
+    ('Wheat', 'Scen1'):          3.0,
+    ('Corn', 'Scen1'):           3.6,
+    ('Sugar Beets', 'Scen1'):   24.0,
+    ('Wheat', 'Scen2'):        2.5,
+    ('Corn', 'Scen2'):         3.0,
+    ('Sugar Beets', 'Scen2'): 20.0,
+    ('Wheat', 'Scen3'):          2.0,
+    ('Corn', 'Scen3'):           2.4,
+    ('Sugar Beets', 'Scen3'):   16.0
 }
 
 PROBABILITY = {
-    'Above':   1 / 3,
-    'Average': 1 / 3,
-    'Below':   1 / 3
+    'Scen1':   1 / 3,
+    'Scen2': 1 / 3,
+    'Scen3':   1 / 3
 }
