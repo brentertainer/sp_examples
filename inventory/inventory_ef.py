@@ -38,4 +38,3 @@ ef = ExtensiveForm(options,
 result = ef.solve_extensive_form()
 print('Objective:', penv.value(ef.ef.EF_Obj))
 print('Purchase:', penv.value(ef.ef.Scen1.inventory[0]))
-

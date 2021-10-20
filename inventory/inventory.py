@@ -52,6 +52,7 @@ def instance_creator(name, num_days, cost, revenue, demand):
     inst.profit_overall = penv.Objective(sense=penv.maximize, rule=profit_overall)
     inst.con_product_conservation = penv.Constraint(inst.days, rule=con_product_conservation)
     inst.con_no_initial_sales = penv.Constraint(rule=con_no_initial_sales)
+
     return inst
 
 
