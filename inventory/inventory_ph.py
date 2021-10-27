@@ -3,14 +3,14 @@ from itertools import product
 from operator import mul
 
 import mpi4py.MPI as mpi
-import mpisppy.utils.sputils as sputils
 from mpisppy.utils import baseparsers, vanilla
+from mpisppy.spin_the_wheel import WheelSpinner
 
 import inventory
 #import data.balanced_3stage as data
-import data.balanced_4stage as data
+#import data.balanced_4stage as data
 #import data.balanced_6stage as data
-#import data.unbalanced_4stage as data
+import data.unbalanced_4stage as data
 
 
 # MPI setup
@@ -69,7 +69,8 @@ if cli_args.with_lagrangian:
     spoke_dicts.append(vanilla.lagrangian_spoke(*args, **kwargs))
 
 # solve
-spcomm, opt_dict = sputils.spin_the_wheel(hub_dict, spoke_dicts)
-sputils.write_spin_the_wheel_first_stage_solution(spcomm, opt_dict, 'solution.csv')
-sputils.write_spin_the_wheel_tree_solution(spcomm, opt_dict, 'solution')
+s = WheelSpinner(hub_dict, spoke_dicts)
+s.spin()
+s.write_first_stage_solution('solution.csv')
+s.write_tree_solution('solution')
 
